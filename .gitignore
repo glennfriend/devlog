@@ -1,0 +1,15 @@
+
+#### Linux
+*~
+
+#### framework
+!var/cache/.htaccess
+var/cache/*
+!var/log/.htaccess
+var/log/*
+!var/session/.htaccess
+var/session/*
+app/config/config.php
+home/media/*
+
+

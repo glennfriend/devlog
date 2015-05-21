@@ -1,0 +1,61 @@
+##################################################
+Options -Indexes
+
+
+##################################################
+# deny access
+<FilesMatch "\.(bak|backup|save|config|inc|ini|sql|log|tar|gz|zip)$">
+    Order allow,deny
+    Deny from all
+    Satisfy all
+</FilesMatch>
+
+# linux
+<FilesMatch "\.(sh|swp|swo)$">
+    Order allow,deny
+    Deny from all
+    Satisfy all
+</FilesMatch>
+
+# linux
+# -> .htaccess
+# -> .git
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+    Satisfy all
+</FilesMatch>
+
+# ~ tag
+# -> index.php~
+<FilesMatch "~">
+    Order allow,deny
+    Deny from all
+    Satisfy all
+</FilesMatch>
+
+
+##################################################
+# 設定開發環境變數
+# 取用方式為 $_SERVER['IS_DEVELOPER_MODE']
+# 注意! 這是一個有風險的設定! 不建議於 live 使用
+#
+SetEnvIf Host "localhost"                    IS_DEVELOPER_MODE=1
+SetEnvIf Host "training3.simplybridal.com"   IS_DEVELOPER_MODE=1
+
+
+##################################################
+# 設定環境變數
+# SetEnv SITE_PATH /var/www
+
+
+##################################################
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /devlog
+
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php?_url=/$1 [QSA,L]
+</IfModule>
+
