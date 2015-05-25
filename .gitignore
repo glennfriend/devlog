@@ -3,11 +3,14 @@
 *~
 
 #### framework
-!var/cache/.htaccess
 var/cache/*
-!var/log/.htaccess
+!var/cache/.htaccess
+
 var/log/*
-!var/session/.htaccess
+!var/log/.htaccess
+
 var/session/*
+!var/session/.htaccess
+
 app/config/config.php
 
