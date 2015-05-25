@@ -5,6 +5,13 @@ class ControllerBase extends Phalcon\Mvc\Controller
 
     protected function initialize()
     {
+
+        // UrlManager setting
+        $config = cc('appConfig');
+        UrlManager::init(array(
+            'baseUri' => $config['baseUri'],
+        ));
+
         $this->assets
             ->addJs('dist/jquery/jquery-1.11.1.js')
             ->addJs('dist/bootstrap/js/bootstrap.js');

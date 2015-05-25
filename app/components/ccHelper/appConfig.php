@@ -22,9 +22,8 @@ function ccHelper_appConfig( $type='public' )
 
     $config = array(
         'portal'    => APP_PORTAL,
-     // 'baseUri'   => Yii::app()->baseUrl ,
-     // 'themeUri'  => Yii::app()->baseUrl . '/themes' ,
-        'homeUri'   => APP_HOME_URI ,
+        'baseUri'   => APP_HOME_URI ,
+       // 'themeUri'  => APP_HOME_URI . '/themes' ,  TODO: please delete it
         'httpHost'  => $_SERVER['HTTP_HOST'] ,
     );
 
@@ -40,12 +39,4 @@ function ccHelper_appConfig( $type='public' )
     */
 
     return $config;
-
-    /*
-        json output
-              "var app = app || {};\n"
-            . 'app.config=' . json_encode($config)
-            . ";\n";
-    */
-
 }
