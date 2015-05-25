@@ -258,7 +258,7 @@ class ZendModel
     protected function getDbSelect()
     {
         $select = new Zend\Db\Sql\Select();
-        $select->columns(array('id'));
+        $select->columns(array($this->pk));
         $select->from( $this->tableName );
         return $select;
     }
@@ -347,7 +347,7 @@ class ZendModel
         $objects = array();
         $getMethod = $this->getMethod;
         while( $row = $result->next() ) {
-            $objects[] = $this->$getMethod( $row['id'] );
+            $objects[] = $this->$getMethod( $row[$this->pk] );
         };
         return $objects;
     }
@@ -359,7 +359,8 @@ class ZendModel
      */
     protected function numFindObjects( $select='' )
     {
-        $expression = array('total' => new \Zend\Db\Sql\Expression('count(id)'));
+        $param = 'count('. $this->pk .')';
+        $expression = array('total' => new \Zend\Db\Sql\Expression($param));
         $select->columns( $expression );
 
         $result = $this->query($select);
