@@ -32,24 +32,12 @@ class Folder extends BaseObject
                 'storage' => 'getName',
                 'field'   => 'name',
             ),
-            'size' => array(
-                'type'    => 'integer',
-                'filters' => array('intval'),
-                'storage' => 'getSize',
-                'field'   => 'size',
-            ),
             'mtime' => array(
                 'type'    => 'timestamp',
                 'filters' => array('dateval'),
                 'storage' => 'getMtime',
                 'field'   => 'mtime',
                 'value'   => 0,
-            ),
-            'tags' => array(
-                'type'    => 'string',
-                'filters' => array('strip_tags','trim'),
-                'storage' => 'getTags',
-                'field'   => 'tags',
             ),
             'properties' => array(
                 'type'    => 'string',
@@ -59,14 +47,6 @@ class Folder extends BaseObject
             ),
         );
     }
-
-    // /**
-    //  *  reset value
-    //  */
-    // public function resetValue()
-    // {
-    //     parent::resetValue();
-    // }
 
     /**
      *  validate
@@ -99,4 +79,6 @@ class Folder extends BaseObject
     /* ------------------------------------------------------------------------------------------------------------------------
         lazy loading methods
     ------------------------------------------------------------------------------------------------------------------------ */
+
+}
 
