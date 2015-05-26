@@ -40,6 +40,8 @@ $factoryApplication = function()
     // Register an autoloader
     $loader = new \Phalcon\Loader();
     $loader->registerDirs(array(
+        $appPath .'/'. APP_PORTAL .'_mods/',
+        $appPath .'/'. APP_PORTAL .'_mods/components/',
         $appPath .'/event/',
         $appPath .'/models/',
         $appPath .'/models/modelHelper/',
@@ -49,17 +51,13 @@ $factoryApplication = function()
         $appPath .'/components/helper/',
         $appPath .'/components/identity/',
         $appPath .'/components/manager/',
-        $appPath .'/'. APP_PORTAL .'_mods/',
-        $appPath .'/'. APP_PORTAL .'_mods/components/',
     ));
     $loader->registerClasses(array(
-        'File_CSV_DataSource'   => $appPath .'/vendors/csv_parser/File_CSV_DataSource.php',
-        'SqlFormatter'          => $appPath .'/vendors/csv_parser/SqlFormatter.php',
+        'SqlFormatter'  => $appPath .'/vendors/SqlFormatter/SqlFormatter.php',
     ));
     $loader->registerNamespaces(array(
-        'HipChat'               => $appPath .'/vendors/HipChat/',
-        'Whoops'                => $appPath .'/vendors/whoops/',
-        'Blocks'                => $appPath .'/'. APP_PORTAL .'_mods/blocks/',
+        'Whoops'        => $appPath .'/vendors/whoops/',
+        'Blocks'        => $appPath .'/'. APP_PORTAL .'_mods/blocks/',
     ));
     $loader->register();
 
