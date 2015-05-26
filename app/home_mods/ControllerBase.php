@@ -12,11 +12,15 @@ class ControllerBase extends Phalcon\Mvc\Controller
             'baseUri' => $config['baseUri'],
         ));
 
+        // jquery qtip
         $this->assets
             ->addJs('dist/jquery/jquery-1.11.1.js')
-            ->addJs('dist/bootstrap/js/bootstrap.js');
+            ->addJs('dist/jquery/qtip2/jquery.qtip.js')
+            ->addCss('dist/jquery/qtip2/jquery.qtip.css');
 
+        // bootstrap
         $this->assets
+            ->addJs('dist/bootstrap/js/bootstrap.js')
             ->addCss('dist/bootstrap/css/bootstrap.css');
 
         logBrg::frontend( $this->dispatcher->getControllerName(), $this->dispatcher->getActionName() );
