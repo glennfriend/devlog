@@ -1,0 +1,21 @@
+
+<h1>
+    <?php echo $folder->getName(); ?>
+    <img src="<?php echo url('/dist/system/type-image/folder.png'); ?>" />
+</h1>
+<h6>
+    <?php echo UrlManager::getRemote($folder); ?>
+</h6>
+<hr/>
+
+    <div class="row">
+    <?php
+
+        $accessories = $folder->getProperty('accessories');
+        pr($accessories);
+        //pr($folder);
+        
+
+    ?>
+    </div>
+

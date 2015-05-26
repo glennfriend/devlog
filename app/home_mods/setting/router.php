@@ -11,12 +11,17 @@
         'action'     => 'index',
     ));
 
+    // show folder
+    $router->add('/folder/([a-z0-9]{32})', array(
+        'controller' => 'folder',
+        'action'     => 'index',
+        'folderKey'  => 1,
+    ));
+
     $router->add('/reindex', array(
         'controller' => 'reindex',
         'action'     => 'index',
     ));
-
-
 
     // page not found
     $router->notFound(array(

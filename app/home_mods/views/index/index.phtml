@@ -1,5 +1,107 @@
-<h1>
-    <ul>
-        <li><a href="//www.simplybridal.com">Simply Bridal</a></li>
-    </ul>
-</h1>
+<?php
+
+    $q = '';
+    $searchData = isset($searchData) ? $searchData : '';
+/*
+    if ( $this->pageLimit ) {
+        $q = $this->pageLimit->getParam('q');
+    }
+*/
+?>
+    <style type="text/css">
+        .ui-tooltip .ui-tooltip-content,
+        .ui-tooltip p,
+        .ui-tooltip ul,
+        .ui-tooltip li,
+        .ui-tooltip,
+        .qtip {
+            max-width: 380px;
+            font-size: 32px;
+            line-height: 34px;
+        }
+    </style>
+
+    <script type="text/javascript" charset="utf-8">
+        "use strict";
+
+        $(function() {
+            $('input[name="q"]').focus();
+        });
+
+        $(function() {
+
+            // qtip
+            var selector = 'span[title]';
+            var setting = {
+                'content':  {attr: 'title'},
+                'position': {'my': 'bottom center', 'at': 'top center'},
+                'style':    {classes: 'qtip-shadow qtip-dark'}
+            };
+            $(selector).qtip(setting);
+
+        });
+    </script>
+
+    <div class="row">
+        <form name="form-search" id="form-search" method="get">
+
+            <div class="col-md-3"></div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" placeholder="想要搜尋什麼內容" name="q" value="<?php echo $searchData; ?>" />
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3"></div>
+
+        </form>
+    </div>
+
+    <hr/>
+
+    <div class="row">
+    <?php
+
+        foreach ( $myFolders as $folder ) {
+            //echo '<div class="col-md-3" style="background-color:#abcdef">'; pr($item); echo '</div>';
+
+            $mtime = date("Y-m-d H:i:s", $folder->getMtime() );
+            //$url = url('/folder', array('key'=>$folder->getKey()) );
+            $url = url('/folder/'. $folder->getKey() );
+            //$imageAttrib = FileTypeImageHelper::getAttribByItem( $item );
+            //$imageLink = FileTypeImageHelper::getLinkByAttrib( $imageAttrib );
+
+            $timeAfter = TimeBeforeHelper::get( $folder->getMtime() );
+
+            if ( mb_strlen( $folder->getName() ) <= 30 ) {
+                $showFull  = '';
+                $showShort = $folder->getName();
+            }
+            else {
+                $showFull  = $folder->getName();
+                $showShort = mb_substr( $showFull, 0, 30 ) . '...';
+            }
+
+            echo <<<EOD
+                <div class="col-md-3">
+                    <div class="thumbnail">
+                        <h4>
+                            <a href="{$url}"><span title="{$showFull}">{$showShort}</span></a>
+                        </h4>
+                        <p>{$timeAfter}</p>
+                    </div>
+                </div>
+EOD;
+        }
+
+        //pr($myFolders[0]);
+
+    ?>
+    </div>
+
