@@ -9,18 +9,19 @@ class ReindexController extends ControllerBase
 
     public function indexAction()
     {
-        // $this->view->setVars();
-
         $root = UrlManager::baseIndexPath();
         $this->getAllFolders($root);
-        $this->parseAllKeyFile();
+        $information = $this->parseAllKeyFile();
+        $this->cleanFolders();
 
-        //pr($this->allFolders);
-        exit;
-
-        //$this->cleanFolders();
+        $this->view->setVars(array(
+            'information' => $information,
+        ));
     }
 
+    /* --------------------------------------------------------------------------------
+        private
+    -------------------------------------------------------------------------------- */
 
     /**
      *  掃描 並且 索引 實際存在的 目錄 與 檔案
@@ -100,11 +101,20 @@ class ReindexController extends ControllerBase
 
     /**
      *  最主要 解析 的主程式
+     *  新增、更新 Folder 資訊
      */
     private function parseAllKeyFile()
     {
+        $information = array(
+            'num_folders'     => 0,
+            'num_tags'        => 0,
+            'num_accessories' => 0,
+        );
 
         foreach ( $this->allFolders as $folderName ) {
+
+            // save information to output
+            $information['num_folders']++;
 
             $file = $folderName .'/'. APP_KEY_FILE;
             if ( !file_exists($file) ) {
@@ -117,46 +127,48 @@ class ReindexController extends ControllerBase
             }
 
             $devlog = $devlogManager->getContentAndConvertEncoding(APP_GUESS_ENCODING);
-            $devlog['_accessories'] = $this->getFolderAccessories( $folderName );
-
             $folderInfo = $this->makeFolderInfo( $folderName, $devlog );
-
-            pr($file);
-            pr($folderInfo);
-            pr($devlog);
 
             // 如果沒有設定初始值, 程式將自動分析目錄名稱, 自動猜測所需的值
             if ( !isset($devlog['tag']) || !$devlog['tag'] ) {
                 $devlog = $this->guessValues( $devlog, $folderName );
             }
 
-            //$devlogManager->save( $devlog );
+            // debug
+            // pr($file);
+            // pr($folderInfo);
+            // pr($devlog);
+            // exit;
 
-            exit;
-        }
+            // save information to output
+            $information['devlogs'][]       = $file;
+            $information['num_tags']        += count($folderInfo['_tags']);
+            $information['num_accessories'] += count($folderInfo['_accessories']);
 
+            // 目前, 只要 reindex, 就一定會寫回 devlog.txt
+            // 之後可以看看是否在未變動的情況下, 就不用再覆寫
+            $devlogManager->save( $devlog );
 
-/*
-
-            //
-            $folder = new Folders();
-            $folder = $folders->getFolder( $file['key'] );
+            // add to database
+            $folders = new Folders();
+            $folder = $folders->getFolder( $folderInfo['key'] );
             if ( !$folder ) {
                 // add
-                $folder = $this->makeNewFolder($file);
-                $folders->addFolder( $folder );
+                $folder = $this->makeNewFolder( $folderInfo );
+                $result = $folders->addFolder( $folder );
             }
-            elseif( $file['mtime'] > $folder->getMtime() ) {
+            elseif( $folderInfo['mtime'] > $folder->getMtime() ) {
                 // update
-                $folder = $this->makeUpdateFolder( $folder, $file );
-                $folders->updateFolder( $folder );
+                $folder = $this->makeNewFolder( $folderInfo );
+                $result = $folders->rebuildFolder( $folder );
             }
             else {
                 // 不變動
             }
 
+        }
 
-*/
+        return $information;
     }
 
     /**
@@ -179,19 +191,21 @@ class ReindexController extends ControllerBase
                 );
             }
         }
-        if ( count($tags)>1 ) {
+        if ( count($tags)>0 ) {
             $score = floor( 100 / count($tags) );
         }
 
+        $accessories = $this->getFolderAccessories( $folderName );
+
         $attrib = stat($folderName);
         $file = array(
-            'key'         => md5($folderName),
-            'real'        => $folderName,
-            'name'        => basename($folderName),
-            'size'        => $attrib['size'],
-          //'mtime'       => $attrib['mtime'], // 不準確, 不使用
-            'mtime'       => $this->getLastUpdate( $devlog ),
-            'tags'        => $tags,
+            'key'           => md5($folderName),
+            'real'          => $folderName,
+            'name'          => basename($folderName),
+          //'mtime'         => $attrib['mtime'], // 不準確, 不使用
+            'mtime'         => $this->getLastUpdate( $accessories ),
+            '_tags'         => $tags,
+            '_accessories'  => $accessories,
         );
         return $file;
     }
@@ -200,21 +214,51 @@ class ReindexController extends ControllerBase
      *  取得目錄之下, 所有檔案當中, 最後、最新的修改日期
      *  以程式結構來看, 直接就是 devlog.txt 是最後修改的檔案
      *
-     *  @return int or false
+     *  @return int
      */
-    private function getLastUpdate( Array $devlog )
+    private function getLastUpdate( Array $accessories )
     {
-        if ( !isset($devlog['_accessories']) ) {
+        if ( !is_array($accessories) ) {
             return false;
         }
 
         $mtimes = array();
-        foreach ( $devlog['_accessories'] as $fileInfo ) {
+        foreach ( $accessories as $fileInfo ) {
             $mtimes[] = $fileInfo['mtime'];
         }
         return max($mtimes);
     }
 
+    /**
+     *  array to new folder object
+     */
+    private function makeNewFolder( Array $folderInfo )
+    {
+        $folder = new Folder();
+        $folder->setKey      ( $folderInfo['key']                           );
+        $folder->setReal     ( $folderInfo['real']                          );
+        $folder->setName     ( $folderInfo['name']                          );
+        $folder->setMtime    ( $folderInfo['mtime']                         );
+        $folder->setProperty ( 'tags', $folderInfo['_tags']                 );
+        $folder->setProperty ( 'accessories', $folderInfo['_accessories']   );
+        return $folder;
+    }
+
+    /**
+     *  檢查在資料表所有的資料, 不存在的就刪除
+     */
+    private function cleanFolders()
+    {
+        $folders = new Folders();
+        $allFolders = $folders->findFolders(array(
+            '_page' => -1,
+        ));
+        foreach( $allFolders as $folder )
+        {
+            if( !file_exists( $folder->getReal() ) ) {
+                $folders->deleteFolder( $folder->getKey() );
+            }
+        }
+    }
+
 }
-
-
