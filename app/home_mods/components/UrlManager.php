@@ -7,18 +7,29 @@ class UrlManager
 {
 
     /**
+     *  使用路徑管理之前, 必須要先設定
+     */
+    protected static $_isSetting = false;
+
+    /**
      *  儲存基本路徑資訊
      */
-    protected static $url = array();
+    protected static $_data = array();
 
     /**
      *
      */
     public static function init( $option )
     {
-        self::$url = array(
+        if( self::$_isSetting ) {
+            return;
+        }
+
+        self::$_data = array(
             'baseUri' => $option['baseUri'],
         );
+
+        self::$_isSetting = true;
     }
 
     /**
@@ -26,53 +37,55 @@ class UrlManager
      */
     public static function baseUri( $pathFile='' )
     {
-        if ( !$pathFile ) {
-            return self::$url['baseUri'];
+        if( !self::$_isSetting ) {
+            return;
         }
-        return self::$url['baseUri'] .'/'. $pathFile;
+
+        if ( !$pathFile ) {
+            return self::$_data['baseUri'];
+        }
+        else {
+            return self::$_data['baseUri'] . '/' . $pathFile;
+        }
+    }
+
+
+    /**
+     *
+     */
+    public static function baseIndexPath()
+    {
+        return APP_SCAN_PATH;
     }
 
     /**
-     *  傳回 theme 基本目錄 uri
+     *
      */
-    public static function themeUri( $pathFile='' )
+    public static function baseResourceUri()
     {
-        if ( !$pathFile ) {
-            return self::baseUri('/themes');
-        }
-        return self::baseUri('/themes'. $pathFile );
+        return APP_RESOURCE_URI;
     }
 
     /* ================================================================================
         extends
     ================================================================================ */
 
-    /**
-     *  傳回 frontend javascript 的目錄 uri
-     */
-    public static function js( $jsPathFile='' )
-    {
-        return self::baseUri( '/js'. $jsPathFile );
-    }
-
-    /**
-     *  傳回 frontend theme 的圖片目錄 uri
-     */
-    public static function themeImage( $imagePathFile='' , $isHtml=false )
-    {
-        $url = self::themeUri( '/default/images/'. $imagePathFile );
-        if( $isHtml ) {
-            return '<img src="'. $url .'" />';
-        }
-        return $url;
-    }
 
 
     /* ================================================================================
         產生專案以外的網址
     ================================================================================ */
 
-    // public static function getxxxxxx()
+    /**
+     *  產生類似 "\\public\work\hello.jpg" 的網址
+     */
+    public static function getRemote( $folder )
+    {
+        $uri = str_replace( APP_SCAN_PATH, '' , $folder->getReal() );
+        $uri = trim( $uri , '/' );
+        $uri = str_replace( '/', '\\' , $uri );
+        return APP_REMOTE_URI .'\\'. $uri . '\\';
+    }
 
 
 
