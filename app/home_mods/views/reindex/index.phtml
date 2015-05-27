@@ -10,6 +10,20 @@
         <div class="row">
             <div class="col-md-7">
 
+                <label>索引排行</label>
+                <ul>
+                    <?php
+                        $i=0;
+                        foreach ( $information['tags'] as $item ) {
+                            if ( $i>=10 ) {
+                                break;
+                            }
+                            echo "<li>{$item['counts']} x {$item['value']}</li>";
+                            $i++;
+                        }
+                    ?>
+                </ul>
+
                 <label>資料夾索引列表 x <?php echo count($information['devlogs']); ?></label>
                 <ol>
                     <?php
@@ -40,6 +54,6 @@
 </div>
 
 <?php
-    //pr($information);
+    // pr($information);
 ?>
 

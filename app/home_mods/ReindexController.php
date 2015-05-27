@@ -103,42 +103,42 @@ class ReindexController extends ControllerBase
             // debug
             // pr($file);  pr($devlog);  pr($folderInfo);  exit;
 
-            // save information to output
-            $information['devlogs'][]       = $file;
-            $information['num_tags']        += count($folderInfo['_tags']);
-            $information['num_accessories'] += count($folderInfo['_accessories']);
-
             // 目前, 只要 reindex, 就一定會寫回 devlog.txt
             // 之後可以看看是否在未變動的情況下, 就不用再覆寫
             $devlogManager->save( $devlog );
 
-
-            /*
-            // add to database
-            $folders = new Folders();
-            $folder = $folders->getFolder( $folderInfo['key'] );
-            if ( !$folder ) {
-                // add
-                $folder = $this->makeNewFolder( $folderInfo );
-                $result = $folders->addFolder( $folder );
-            }
-            elseif( $folderInfo['mtime'] > $folder->getMtime() ) {
-                // update
-                $folder = $this->makeNewFolder( $folderInfo );
-                $result = $folders->rebuildFolder( $folder );
-            }
-            else {
-                // 不變動
-            }
-            */
-            
-            // 一律重建
+            // 一律重建 to database
             $folders = new Folders();
             $folder = $this->makeNewFolder( $folderInfo );
             $folders->rebuildFolder( $folder );
 
+            // save information to output
+            $information['devlogs'][]       = $file;
+            $information['num_tags']        += count($folderInfo['_tags']);
+            $information['num_accessories'] += count($folderInfo['_accessories']);
+            foreach ( $folderInfo['_tags'] as $tag ) {
+                $value = $tag['key'].':'.$tag['value'];
+                $hash  = md5($value);
+                if ( !isset($information['tags'][$hash]) ) {
+                    $information['tags'][$hash] = array(
+                        'value'  => $value,
+                        'counts' => 0,
+                    );
+                }
+                $information['tags'][$hash]['counts']++;
+            }
+
         }
 
+        // sort information tag order
+        $customSort = function( $key ) {
+            return function ($a, $b) use ($key) {
+                return strnatcmp($b[$key], $a[$key]);
+            };
+        };
+        usort( $information['tags'], $customSort('counts') );
+
+        //
         return $information;
     }
 
@@ -163,8 +163,6 @@ class ReindexController extends ControllerBase
     {
         $folderName = basename($folderPath);
         $keywords = str_replace( array('.','~','&') ,' ' , $folderName );
-
-        $devlog['topic'] = $folderName;
         $devlog['tag']  = $keywords;
         return $devlog;
     }
@@ -261,7 +259,7 @@ class ReindexController extends ControllerBase
     }
 
     /**
-     *  整理各種 tags ( tag, topic, git 等... )
+     *  整理各種 tags ( tag, git, gira 等... )
      */
     private function filterAllTag( $devlog )
     {
