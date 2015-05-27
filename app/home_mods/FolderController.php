@@ -8,7 +8,7 @@ class FolderController extends ControllerBase
         $folders = new Folders();
         $folder = $folders->getFolder($folderKey);
         if ( !$folder ) {
-            echo 'hello';
+            echo 'hello world';
             exit;
         }
 

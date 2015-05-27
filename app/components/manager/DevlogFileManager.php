@@ -110,7 +110,6 @@ class DevlogFileManager
     private function getDefaultValues()
     {
         return array(
-            'topic' => null,
             'tag' => null,
         );
     }
