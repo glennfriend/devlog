@@ -73,12 +73,7 @@ class Folders extends ZendModel
     public function rebuildFolder( $object )
     {
         $this->removeCache( $object );
-
-        $result = $this->deleteFolder( $object->getKey() );
-        if ( !$result ) {
-            return false;
-        }
-        
+        $this->deleteFolder( $object->getKey() );
         return $this->addFolder( $object );
     }
 
