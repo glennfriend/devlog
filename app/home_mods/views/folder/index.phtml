@@ -1,21 +1,33 @@
+<?php
 
-<h1>
-    <?php echo $folder->getName(); ?>
-    <i class="fa fa-folder-open-o" style="color: green;"></i>
-</h1>
-<h6>
-    <?php echo UrlManager::getRemote($folder); ?>
-</h6>
-<hr/>
+    $view = new stdClass();
+    $view->topic            = $folder->getName();
+    $view->icon             = '<i class="fa fa-folder-open-o" style="color: green;"></i>';
+    $view->path             = UrlManager::getRemote($folder);
+    $view->desc             = '';
+    $view->content_header   = '';
+    $view->content          = '';
+    $view->content_footer   = '';
 
-    <div class="row">
-    <?php
+    PluginManager::notify('folder_view_header', array('view'=>$view, 'folder'=>$folder) );
 
-        $accessories = $folder->getProperty('accessories');
-        pr($accessories);
-        //pr($folder);
-        
+    echo <<<EOD
+        <div class="row">
+            <h1>
+                {$view->topic}
+                {$view->icon}
+            </h1>
+            <h6>{$view->path}</h6>
+            <h6>{$view->desc}</h6>
+            <hr/>
+        </div>
+        <div class="row">{$view->content_header}</div>
+        <div class="row">{$view->content}</div>
+        <div class="row">{$view->content_footer}</div>
+EOD;
 
-    ?>
-    </div>
 
+    // pr($view);
+    // pr($folder);
+
+    
