@@ -52,7 +52,10 @@
                     <div class="input-group input-group-lg">
                         <input type="text" class="form-control" placeholder="想要搜尋什麼內容" name="q" value="<?php echo $searchData; ?>" />
                         <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary">Search</button>
+                            <button type="submit" class="btn btn-primary">
+                                Search
+                                <i class="fa fa-search"></i>
+                            </button>
                         </span>
                     </div>
                 </div>
@@ -69,7 +72,6 @@
     <?php
 
         foreach ( $myFolders as $folder ) {
-            //echo '<div class="col-md-3" style="background-color:#abcdef">'; pr($item); echo '</div>';
 
             $mtime = date("Y-m-d H:i:s", $folder->getMtime() );
             //$url = url('/folder', array('key'=>$folder->getKey()) );
@@ -79,17 +81,17 @@
 
             $timeAfter = TimeBeforeHelper::get( $folder->getMtime() );
 
-            if ( mb_strlen( $folder->getName() ) <= 30 ) {
+            if ( mb_strlen( $folder->getName() ) <= 60 ) {
                 $showFull  = '';
                 $showShort = $folder->getName();
             }
             else {
                 $showFull  = $folder->getName();
-                $showShort = mb_substr( $showFull, 0, 30 ) . '...';
+                $showShort = mb_substr( $showFull, 0, 60 ) . '...';
             }
 
             echo <<<EOD
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <div class="thumbnail">
                         <h4>
                             <a href="{$url}"><span title="{$showFull}">{$showShort}</span></a>
