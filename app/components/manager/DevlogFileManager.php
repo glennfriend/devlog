@@ -64,9 +64,8 @@ class DevlogFileManager
             $content = mb_convert_encoding( $content, "UTF-8", $encoding );
         }
 
-        $content = $this->parseContent( $content );
-        $content['tag'] = $this->parseTags( $content['tag'] );
-        return $content;
+        $contents = $this->parseContent( $content );
+        return $contents;
     }
 
     /**
@@ -126,7 +125,7 @@ class DevlogFileManager
         foreach ( $lines as $line ) { 
         
             $items = explode( $this->chopChar, $line );
-            if (count($items) <= 1) {
+            if ( count($items) <= 1 ) {
                 continue;
             } 
 
@@ -142,26 +141,7 @@ class DevlogFileManager
             $data[$name] = $value;
         }
 
-
         return $data;
-    }
-
-    /**
-     *  解析 tags
-     */
-    private function parseTags( $tagString )
-    {
-        $items = explode(' ', $tagString );
-        $tags = array();
-
-        foreach ( $items as $item ) {
-            $item = trim($item);
-            if (!$item) {
-                continue;
-            }
-            $tags[] = $item;
-        }
-        return join(' ', array_unique($tags) );
     }
 
 }

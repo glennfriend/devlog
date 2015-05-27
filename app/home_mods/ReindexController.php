@@ -58,45 +58,15 @@ class ReindexController extends ControllerBase
                 }
             }
             else {
+                if ( 'devlog.txt'==basename($pathName) ) {
+                    // 不會把 devlog.txt 加入降件清單
+                    continue;
+                }
                 $files[] = $this->getAccessoryInfo($pathName);
             }
         }
+
         return $files;
-    }
-
-    /**
-     *  取得附件資訊
-     */
-    private function getAccessoryInfo( $file )
-    {
-        $attrib = stat($file);
-        return array(
-            'file'  => $file,
-            'mtime' => $attrib['mtime'],
-            'size'  => $attrib['size'],
-        );
-    }
-
-    /**
-     *  程式將自動分析目錄名稱, 自動猜測所需的值
-     */
-    private function guessValues( Array $devlog, $folderPath )
-    {
-        $folderName = basename($folderPath);
-
-        $tags = array();
-        $keywords = str_replace( array('.','~','&') ,' ' , $folderName );
-        $keywords = explode(' ', $keywords );
-        foreach ( $keywords as $keyword ) {
-            if ( mb_strlen($keyword)<4 ) {
-                continue;
-            }
-            $tags[] = strtolower(trim($keyword));
-        }
-
-        $devlog['topic'] = $folderName;
-        $devlog['tag']  = join(' ', $tags );
-        return $devlog;
     }
 
     /**
@@ -127,18 +97,11 @@ class ReindexController extends ControllerBase
             }
 
             $devlog = $devlogManager->getContentAndConvertEncoding(APP_GUESS_ENCODING);
+            $devlog = $this->devlogProcess( $devlog, $folderName );
             $folderInfo = $this->makeFolderInfo( $folderName, $devlog );
 
-            // 如果沒有設定初始值, 程式將自動分析目錄名稱, 自動猜測所需的值
-            if ( !isset($devlog['tag']) || !$devlog['tag'] ) {
-                $devlog = $this->guessValues( $devlog, $folderName );
-            }
-
             // debug
-            // pr($file);
-            // pr($folderInfo);
-            // pr($devlog);
-            // exit;
+            // pr($file);  pr($devlog);  pr($folderInfo);  exit;
 
             // save information to output
             $information['devlogs'][]       = $file;
@@ -149,6 +112,8 @@ class ReindexController extends ControllerBase
             // 之後可以看看是否在未變動的情況下, 就不用再覆寫
             $devlogManager->save( $devlog );
 
+
+            /*
             // add to database
             $folders = new Folders();
             $folder = $folders->getFolder( $folderInfo['key'] );
@@ -165,10 +130,43 @@ class ReindexController extends ControllerBase
             else {
                 // 不變動
             }
+            */
+            
+            // 一律重建
+            $folders = new Folders();
+            $folder = $this->makeNewFolder( $folderInfo );
+            $folders->rebuildFolder( $folder );
 
         }
 
         return $information;
+    }
+
+
+    /**
+     *  取得附件資訊
+     */
+    private function getAccessoryInfo( $file )
+    {
+        $attrib = stat($file);
+        return array(
+            'file'  => $file,
+            'mtime' => $attrib['mtime'],
+            'size'  => $attrib['size'],
+        );
+    }
+
+    /**
+     *  程式將自動分析目錄名稱, 自動猜測所需的值
+     */
+    private function guessValues( Array $devlog, $folderPath )
+    {
+        $folderName = basename($folderPath);
+        $keywords = str_replace( array('.','~','&') ,' ' , $folderName );
+
+        $devlog['topic'] = $folderName;
+        $devlog['tag']  = $keywords;
+        return $devlog;
     }
 
     /**
@@ -184,6 +182,9 @@ class ReindexController extends ControllerBase
             }
             $items = explode(' ', $itemString);
             foreach ( $items as $item ) {
+                if ( !$item ) {
+                    continue;
+                }
                 $tags[] = array( 
                     'key'   => $key,
                     'value' => $item,
@@ -242,6 +243,62 @@ class ReindexController extends ControllerBase
         $folder->setProperty ( 'tags', $folderInfo['_tags']                 );
         $folder->setProperty ( 'accessories', $folderInfo['_accessories']   );
         return $folder;
+    }
+
+    /**
+     *
+     */
+    private function devlogProcess( $devlog, $folderName )
+    {
+        // 如果沒有設定初始值, 程式將自動分析目錄名稱, 自動猜測所需的值
+        if ( !isset($devlog['tag']) || !$devlog['tag'] ) {
+            $devlog = $this->guessValues( $devlog, $folderName );
+        }
+
+        // filter tag
+        $devlog = $this->filterAllTag($devlog);
+        return $devlog;
+    }
+
+    /**
+     *  整理各種 tags ( tag, topic, git 等... )
+     */
+    private function filterAllTag( $devlog )
+    {
+        foreach ( $devlog as $type => $tagString ) 
+        {
+            if (!preg_match('/^[a-z][a-z-]*$/', $type)) {
+                continue;
+            }
+            if ( mb_strlen($type)>16 ) {
+                continue;
+            }
+
+            if ( is_array($tagString) ) {
+                continue;
+            }
+            if ( is_object($tagString) ) {
+                continue;
+            }
+
+            $words = explode(' ', $tagString );
+            $tags = array();
+
+            foreach ( $words as $value ) {
+                $value = str_replace( array('~','!','%','_','(',')','<','>',',','.','?') ,'' ,$value );
+                $value = trim($value);
+                if (!$value) {
+                    continue;
+                }
+                if ( strlen($value)<3 ) {
+                    continue;
+                }
+                $tags[] = strtolower($value);
+            }
+
+            $devlog[$type] = join(' ', array_unique($tags) );
+        }
+        return $devlog;
     }
 
     /**
