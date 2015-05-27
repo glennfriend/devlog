@@ -278,6 +278,17 @@ EOD;
     ================================================================================ */
 
     /**
+     *  清除所有的 folder tags
+     *  清除之後將搜尋不到任何資料
+     */
+    public function cleanAllFolderTags()
+    {
+        $this
+            ->getAdapter()
+            ->query("TRUNCATE TABLE `folder_tags`;", Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE );
+    }
+
+    /**
      *  重建 folder tags
      */
     protected function resetFolderTags( $folder )
@@ -316,7 +327,6 @@ EOD;
         }
 
     }
-    
     
 
 }

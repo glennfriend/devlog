@@ -73,6 +73,11 @@
 
         foreach ( $myFolders as $folder ) {
 
+            if ( !$folder ) {
+                echo "<div>找到有一筆資料不存在實體檔案, 建議重新索引</div>";
+                continue;
+            }
+
             $mtime = date("Y-m-d H:i:s", $folder->getMtime() );
             //$url = url('/folder', array('key'=>$folder->getKey()) );
             $url = url('/folder/'. $folder->getKey() );

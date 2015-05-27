@@ -81,6 +81,10 @@ class ReindexController extends ControllerBase
             'num_accessories' => 0,
         );
 
+        // 先清除所有的 folder_tags
+        $folders = new Folders();
+        $folders->cleanAllFolderTags();
+
         foreach ( $this->allFolders as $folderName ) {
 
             // save information to output
@@ -108,7 +112,6 @@ class ReindexController extends ControllerBase
             $devlogManager->save( $devlog );
 
             // 一律重建 to database
-            $folders = new Folders();
             $folder = $this->makeNewFolder( $folderInfo );
             $folders->rebuildFolder( $folder );
 
