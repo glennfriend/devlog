@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+/**
+ *  經常使用的 css tool
+ *  不污染其它的 css (予許被污染)
+ *  可以因情況修改參數 (color)
+ *  全部以 "uni-" 開頭, 表示單一、單純的功能性
+ *
+ *  @update 2015-05-27
+ *
+ */
+
+/* 
+    bootstrap 連結顯示方式
+    example:
+        <span class="uni-show-link">your-messages</span>
+*/
+.uni-show-link {
+    cursor: pointer;
+    color: #428bca;
+}
+.uni-show-link:hover {
+    text-decoration: underline;
+}
+
+
+//

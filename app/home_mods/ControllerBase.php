@@ -23,6 +23,15 @@ class ControllerBase extends Phalcon\Mvc\Controller
             ->addJs('dist/bootstrap/js/bootstrap.js')
             ->addCss('dist/bootstrap/css/bootstrap.css');
 
+        // font icon
+        $this->assets
+            ->addCss('dist/font-awesome-4.3.0/css/font-awesome.min.css');
+
+        // custom
+        $this->assets
+            ->addCss('dist/uni-css-helper/uni.css');
+
+
         logBrg::frontend( $this->dispatcher->getControllerName(), $this->dispatcher->getActionName() );
     }
 

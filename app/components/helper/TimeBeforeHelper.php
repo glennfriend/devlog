@@ -51,13 +51,19 @@ class TimeBeforeHelper
         $thisWeekFirst = strtotime("last monday");
         $prevWeekFirst = $thisWeekFirst - 604800;
         if ( $prevWeekFirst <= $times && $times < $thisWeekFirst ) {
-            return '上週';
+            return '上週 → ' . date('Y-F m-d D(w)', $times);
         }
 
         // "Y-m-01" 表示本月第一天
         $thisMonth = strtotime(date("Y-m-01"));
         if ( $times >= $thisMonth ) {
             return '這個月';
+        }
+
+        // "Y-01-01" 表示今年第一天
+        $thisYear = strtotime(date("Y-01-01"));
+        if ( $times >= $thisYear ) {
+            return '今年 → ' . date('Y-F m-d D(w)', $times);
         }
 
         //
