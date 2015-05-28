@@ -84,13 +84,8 @@
      *  'file' or 'memcache'
      */
     define('APP_CACHE_TYPE', 'file');
-    //define('APP_CACHE_TYPE', 'memcache');
-
-    /**
-     *
-     */
-    define('APP_MEMCACHE_HOST', 'localhost' );
-    define('APP_MEMCACHE_PORT', '11211' );
+    //define('APP_MEMCACHE_HOST', 'localhost' );
+    //define('APP_MEMCACHE_PORT', '11211' );
 
 
     /* ================================================================================
@@ -111,19 +106,19 @@
     ================================================================================ */
 
     /**
-     *  程式上線之後，一但修改該參數，則必須要將資料表清除，重新索引
+     *  如果修改該參數，必須要重新索引
      */
-    define('APP_SCAN_PATH', '/home/public-developer' );
+    define('APP_SCAN_PATH', '/var/www/devlog/public_sample' );
 
     /**
      *  程式上線之後，一但修改該參數，則必須要將資料表清除，重新索引
      */
-    define('APP_RESOURCE_URI', 'file://training/public-developer' );
+    define('APP_REMOTE_URI', '\\\\training.com\\devlog\\public_sample' );
 
     /**
      *  resource prefix path
      */
-    define('APP_RESOURCE_URI', 'file://training/public' );
+    define('APP_RESOURCE_URI', 'file://training.com/devlog/public_sample' );
 
     /**
      *  parse config file
