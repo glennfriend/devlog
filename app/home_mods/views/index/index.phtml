@@ -98,10 +98,12 @@
             echo <<<EOD
                 <div class="col-md-12">
                     <div class="thumbnail">
-                        <h4>
-                            <a href="{$url}"><span title="{$showFull}">{$showShort}</span></a>
-                        </h4>
-                        <p>{$timeAfter}</p>
+                        <div class="caption">
+                            <h4>
+                                <a href="{$url}"><span title="{$showFull}">{$showShort}</span></a>
+                            </h4>
+                            <p>{$timeAfter}</p>
+                        </div>
                     </div>
                 </div>
 EOD;
