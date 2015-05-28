@@ -15,7 +15,7 @@
 ```sh
     mkdir var/cache
     chmodr -R var
-```sh
+```
 
 ###權限問題
     1. 使用者要能把記錄檔丟到一個公開的地方, 通常是經由 samba
