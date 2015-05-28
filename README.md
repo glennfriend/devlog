@@ -12,3 +12,8 @@
        例如: usermod -a -G ken www-data
     2. 如果要利用群組, samba 可以設定 create mask = 0764 (6=rx)
 
+#install
+
+    mkdir var/cache
+    chmodr -R var
+
