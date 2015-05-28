@@ -58,7 +58,7 @@ class ReindexController extends ControllerBase
                 }
             }
             else {
-                if ( 'devlog.txt'==basename($pathName) ) {
+                if ( APP_KEY_FILE == basename($pathName) ) {
                     // 不會把 devlog.txt 加入降件清單
                     continue;
                 }
@@ -216,7 +216,6 @@ class ReindexController extends ControllerBase
 
     /**
      *  取得目錄之下, 所有檔案當中, 最後、最新的修改日期
-     *  以程式結構來看, 直接就是 devlog.txt 是最後修改的檔案
      *
      *  @return int
      */

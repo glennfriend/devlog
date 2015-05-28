@@ -12,8 +12,8 @@
      *      dev
      *      live
      */
-    // define('APP_ENVIRONMENT', 'live' );
-    define('APP_ENVIRONMENT', 'dev' );
+    define('APP_ENVIRONMENT', 'live' );
+    // define('APP_ENVIRONMENT', 'dev' );
 
     /**
      *  每個網站剛建立時要設定的私有密碼
@@ -119,6 +119,11 @@
      *  程式上線之後，一但修改該參數，則必須要將資料表清除，重新索引
      */
     define('APP_RESOURCE_URI', 'file://training/public-developer' );
+
+    /**
+     *  resource prefix path
+     */
+    define('APP_RESOURCE_URI', 'file://training/public' );
 
     /**
      *  parse config file
