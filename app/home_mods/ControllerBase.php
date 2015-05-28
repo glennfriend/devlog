@@ -21,7 +21,7 @@ class ControllerBase extends Phalcon\Mvc\Controller
         // bootstrap
         $this->assets
             ->addJs('dist/bootstrap/js/bootstrap.js')
-            ->addCss('dist/bootstrap/css/bootstrap.css');
+            ->addCss('dist/bootstrap-3.3.4-dist/css/bootstrap.css');
 
         // font icon
         $this->assets
