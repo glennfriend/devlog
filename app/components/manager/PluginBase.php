@@ -5,16 +5,15 @@
  */
 class PluginBase
 {
-
     /**
      *  說明
      */
-    private $desc = "沒有說明";
+    protected $desc = "沒有說明";
 
     /**
-     *  外掛呼叫順序
+     *  是否啟用該外掛
      */
-    private $order = 1000;
+    protected $enable = false;
 
     /**
      *
@@ -25,11 +24,35 @@ class PluginBase
 
     /**
      *  是否已安裝該 plugin
-     */
     public function isEnable()
     {
         // TODO: 請改成吃資訊檔
         return true;
+    }
+     */
+
+    /**
+     *  init
+     */
+    public function init()
+    {
+        // nothing
+    }
+
+    /**
+     *  說明訊息
+     */
+    public function getDesc()
+    {
+        return $this->desc;
+    }
+
+    /**
+     *  是否啟用該外掛
+     */
+    public function isEnable()
+    {
+        return $this->enable;
     }
 
 }

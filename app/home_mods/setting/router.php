@@ -12,7 +12,7 @@
     ));
 
     // show folder
-    $router->add('/folder/([a-z0-9]{32})', array(
+    $router->add('/folder/([a-z0-9]+)', array(
         'controller' => 'folder',
         'action'     => 'index',
         'folderKey'  => 1,
@@ -21,6 +21,18 @@
     $router->add('/reindex', array(
         'controller' => 'reindex',
         'action'     => 'index',
+    ));
+
+    $router->add('/plugin', array(
+        'controller'    => 'plugin',
+        'action'        => 'index',
+
+    ));
+    $router->add('/api/plugin/([a-zA-Z0-9]*)/(yes|no)', array(
+        'controller'    => 'api',
+        'action'        => 'plugin',
+        'key'           => 1,
+        'status'        => 2,
     ));
 
     // page not found

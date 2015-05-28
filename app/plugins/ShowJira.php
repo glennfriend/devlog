@@ -6,7 +6,10 @@
 class ShowJira extends PluginBase
 {
 
-    private $desc = "show Jira link";
+    public function init()
+    {
+        $this->desc = "show Jira link";
+    }
 
     public function folder_view_header( $data )
     {

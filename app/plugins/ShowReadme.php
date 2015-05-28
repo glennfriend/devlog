@@ -6,7 +6,10 @@
 class ShowReadme extends PluginBase
 {
 
-    private $desc = "如果資料夾中有 readme.txt 就顯示該內容";
+    public function init()
+    {
+        $this->desc = "如果資料夾中有類似 readme.txt 的檔案名稱, 就顯示該內容";
+    }
 
     public function folder_view_header( $data )
     {

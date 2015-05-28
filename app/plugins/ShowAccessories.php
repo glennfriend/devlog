@@ -6,7 +6,10 @@
 class ShowAccessories extends PluginBase
 {
 
-    private $desc = "顯示附件";
+    public function init()
+    {
+        $this->desc = "顯示附件";
+    }
 
     public function folder_view_header( $data )
     {

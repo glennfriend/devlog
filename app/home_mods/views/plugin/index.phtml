@@ -1,0 +1,87 @@
+<script>
+    var plugins = <?php echo json_encode($plugins); ?>;
+
+    $(function() {
+        process();
+    });
+
+    /**
+     *  跑一個完整的流程
+     *
+     *      1. 讀取資料
+     *      2. render html
+     *      3. bind event
+     */
+    function process()
+    {
+        render();
+
+        $(".shift").on('click', function() {
+            var key = $(this).attr('key');
+            var plugin = getPlugin(key);
+            if ( plugin.enable == true ) {
+                var url = app.baseUri + "/api/plugin/"+ plugin.name +"/no";
+            }
+            else {
+                var url = app.baseUri + "/api/plugin/"+ plugin.name +"/yes";
+            }
+
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                success: function(info){ 
+                    plugin.enable = !plugin.enable;
+                    process();
+                }
+            });
+        });
+    }
+
+    /**
+     *  getPlugin by name
+     */
+    function getPlugin( name )
+    {
+        for ( key in plugins ) {
+            if ( plugins[key].name == name ) {
+                return plugins[key];
+            }
+        }
+        return null;
+    }
+
+    function render()
+    {
+        var content = '';
+        for ( key in plugins )
+        {
+            var plugin = plugins[key];
+            if ( plugin.enable == 1 ) {
+                var blockClass = 'alert-success';
+                var link = '<input type="button" value="關閉" class="shift btn-xs btn-danger" key="'+ plugin.name +'" />';
+            }
+            else {
+                var blockClass = 'alert-danger';
+                var link = '<input type="button" value="開啟" class="shift btn-xs btn-success" key="'+ plugin.name +'" />';
+            }
+            // 
+            content += '<div class="alert '+ blockClass +'">';
+            content += '    <h4>'+ plugin.desc +'</h4>';
+            content += '    <p>';
+            content += '        '+ plugin.name;
+            content += '        <span style="float:right">'+ link +'</span>';
+            content += '    </p>';
+            content += '</div>';
+        }
+        $("#content").html(content);
+    }
+
+</script>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div id="content"></div>
+    </div>
+    <div class="col-md-2"></div>
+</div>

@@ -4,10 +4,12 @@
 
 #### framework
 var/cache/*
-!var/cache/.htaccess
 
 var/log/*
 !var/log/.htaccess
+
+var/plugin/*
+!var/plugin/.htaccess
 
 var/session/*
 !var/session/.htaccess

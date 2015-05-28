@@ -1,15 +1,15 @@
 <?php
 
-// 如果不想啟用該功能
-// return;
-
 /**
  *  顯示所有外掛的位置
  */
 class ShowAllPluginLocation extends PluginBase
 {
 
-    private $desc = "顯示所有外掛的所在位置";
+    public function init()
+    {
+        $this->desc = "顯示所有外掛的所在位置";
+    }
 
     /**
      *

@@ -86,7 +86,10 @@ $factoryApplication = function()
     Ydin\Event::notify('init_footer', array('app'=>$app) );
 
     // 該程式提供的外掛程式, 以方便擴充
-    PluginManager::init( APP_BASE_PATH . '/app/plugins' );
+    PluginManager::init(
+        APP_BASE_PATH . '/app/plugins',
+        APP_BASE_PATH . '/var/plugin/setting.txt'
+    );
 
     return $app;
 };
