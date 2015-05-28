@@ -79,6 +79,8 @@ class ReindexController extends ControllerBase
             'num_folders'     => 0,
             'num_tags'        => 0,
             'num_accessories' => 0,
+            'tags'            => array(),
+            'devlogs'         => array(),
         );
 
         // 先清除所有的 folder_tags
