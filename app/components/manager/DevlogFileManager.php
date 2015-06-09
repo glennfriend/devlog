@@ -57,6 +57,7 @@ class DevlogFileManager
         }
 
         $content = file_get_contents( $this->file );
+        $content = $this->removeUtf8Bom($content);
 
         // 如果內容編碼不正確, 會強制轉換成 utf-8
         $encoding = mb_detect_encoding( $content, $convertFromEncoding );
@@ -139,8 +140,13 @@ class DevlogFileManager
 
             $data[$name] = $value;
         }
-
         return $data;
+    }
+
+    private function removeUtf8Bom($text)
+    {
+        $bom = pack('H*','EFBBBF');
+        return preg_replace("/^$bom/", '', $text);
     }
 
 }
