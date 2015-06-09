@@ -229,6 +229,9 @@ class ReindexController extends ControllerBase
         foreach ( $accessories as $fileInfo ) {
             $mtimes[] = $fileInfo['mtime'];
         }
+        if ( !$mtimes ) {
+            return 0;
+        }
         return max($mtimes);
     }
 
